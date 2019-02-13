@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestWithASPNET.Model;
-using RestWithASPNET.Services;
+using RestWithASPNET.Business;
 
 namespace RestWithASPNET.Controllers
 {
@@ -14,25 +14,25 @@ namespace RestWithASPNET.Controllers
     [Route("api/[controller]/v{version:apiVersion}")]
     public class PersonsController : Controller
     {
-        private IPersonService _personService;
+        private IPersonBusiness _personBusiness;
 
-        public PersonsController(IPersonService personService)
+        public PersonsController(IPersonBusiness personBusiness)
         {
-            _personService = personService;
+            _personBusiness = personBusiness;
         }
 
         // GET api/values
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_personService.FindByAll());
+            return Ok(_personBusiness.FindByAll());
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var person = _personService.FindById(id);
+            var person = _personBusiness.FindById(id);
             if (person == null)
                 return NotFound();
             return Ok(person);
@@ -44,16 +44,16 @@ namespace RestWithASPNET.Controllers
         {
             if (person == null)
                 return NotFound();
-            return new ObjectResult(_personService.Create(person));
+            return new ObjectResult(_personBusiness.Create(person));
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public IActionResult Put(int id, [FromBody]Person person)
         {
             if (person == null)
                 return NotFound();
-            return new ObjectResult(_personService.Update(person));
+            return new ObjectResult(_personBusiness.Update(person));
 
         }
 
@@ -61,7 +61,7 @@ namespace RestWithASPNET.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _personService.Delete(id);
+            _personBusiness.Delete(id);
             return NoContent();
         }
     }
