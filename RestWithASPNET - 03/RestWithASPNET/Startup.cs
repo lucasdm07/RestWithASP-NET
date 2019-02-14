@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RestWithASPNET.Business;
+using RestWithASPNET.Business.Implementations;
 using RestWithASPNET.Model.Context;
 using RestWithASPNET.Repository;
+using RestWithASPNET.Repository.Generic;
 using System;
 using System.Collections.Generic;
 
@@ -61,7 +63,9 @@ namespace RestWithASPNET
 
             // Injeção de Dependencia
             services.AddScoped<IPersonBusiness, PersonBusinessImpl>();
-            services.AddScoped<IPersonRepository, PersonRepositoryImpl>();
+            services.AddScoped<IBookBusiness, BookBusinessImpl>();
+
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
