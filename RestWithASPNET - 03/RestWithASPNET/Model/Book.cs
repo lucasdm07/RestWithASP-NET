@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace RestWithASPNET.Model
 {
+    [Table("books")]
     public class Book : BaseEntity
     {
         [Key]
         [Column("id")]
-        public string Id { get; set; }
+        public long Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public decimal Price { get; set; }

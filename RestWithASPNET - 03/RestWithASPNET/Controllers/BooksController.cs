@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using RestWithASPNET.Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using RestWithASPNET.Business;
+using RestWithASPNET.Data.VO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,39 +11,48 @@ namespace RestWithASPNET.Controllers
     [Route("api/[controller]/v{version:apiVersion}")]
     public class BooksController : Controller
     {
-        // GET: api/<controller>
+        private IBookBusiness _bookBusiness;
+
+        public BooksController(IBookBusiness bookBusiness)
+        {
+            _bookBusiness = bookBusiness;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok();
+            return new OkObjectResult(_bookBusiness.FindAll());
         }
 
-        // GET api/<controller>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(long id)
         {
-            return Ok();
+            var book = _bookBusiness.FindById(id);
+            if (book == null) return NotFound();
+            return new OkObjectResult(book);
         }
 
-        // POST api/<controller>
         [HttpPost]
-        public IActionResult Post([FromBody]string value)
+        public IActionResult Post([FromBody]BookVO book)
         {
-            return Ok();
+            if (book == null) return BadRequest();
+            return new OkObjectResult(_bookBusiness.Create(book));
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Book book)
+        [HttpPut]
+        public IActionResult Put([FromBody]BookVO book)
         {
-            return Ok();
+            if (book == null) return BadRequest();
+            var updatedBook = _bookBusiness.Update(book);
+            if (updatedBook == null) return BadRequest();
+            return new OkObjectResult(updatedBook);
         }
 
-        // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            return Ok();
+            _bookBusiness.Delete(id);
+            return NoContent();
         }
     }
 }

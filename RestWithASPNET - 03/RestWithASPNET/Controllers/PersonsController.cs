@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestWithASPNET.Model;
 using RestWithASPNET.Business;
+using RestWithASPNET.Data.VO;
 
 namespace RestWithASPNET.Controllers
 {
@@ -40,21 +41,21 @@ namespace RestWithASPNET.Controllers
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Person person)
+        public IActionResult Post([FromBody]PersonVO personVO)
         {
-            if (person == null)
+            if (personVO == null)
                 return NotFound();
-            return new ObjectResult(_personBusiness.Create(person));
+            return new ObjectResult(_personBusiness.Create(personVO));
         }
 
         // PUT api/values/5
         [HttpPut]
-        public IActionResult Put(int id, [FromBody]Person person)
+        public IActionResult Put(int id, [FromBody]PersonVO personVO)
         {
-            if (person == null)
+            if (personVO == null)
                 // return BadRequest();
                 return NotFound();
-            var updatedPerson = _personBusiness.Update(person);
+            var updatedPerson = _personBusiness.Update(personVO);
             if (updatedPerson == null)
                 return NoContent();
             return new ObjectResult(updatedPerson);

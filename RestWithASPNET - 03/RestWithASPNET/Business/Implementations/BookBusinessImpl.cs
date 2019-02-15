@@ -1,44 +1,49 @@
-﻿using RestWithASPNET.Model;
+﻿using RestWithASPNET.Data.Converters;
+using RestWithASPNET.Data.VO;
+using RestWithASPNET.Model;
 using RestWithASPNET.Repository.Generic;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RestWithASPNET.Business.Implementations
 {
     public class BookBusinessImpl : IBookBusiness
     {
         private IRepository<Book> _repository;
+        private BookConverter _bookConverter;
 
         public BookBusinessImpl(IRepository<Book> repository)
         {
             _repository = repository;
+            _bookConverter = new BookConverter();
         }
 
-        public Book Create(Book book)
+        public BookVO Create(BookVO bookVO)
         {
-            throw new NotImplementedException();
+            var book = _bookConverter.Parse(bookVO);
+            book = _repository.Create(book);
+            return _bookConverter.Parse(book);
         }
 
         public void Delete(long id)
         {
-            throw new NotImplementedException();
+            _repository.Delete(id);
         }
 
-        public List<Book> FindAll()
+        public List<BookVO> FindAll()
         {
-            throw new NotImplementedException();
+            return _bookConverter.ParseList(_repository.FindByAll());
         }
 
-        public Book FindById(long id)
+        public BookVO FindById(long id)
         {
-            throw new NotImplementedException();
+            return _bookConverter.Parse(_repository.FindById(id));
         }
 
-        public Book Update(Book book)
+        public BookVO Update(BookVO bookVO)
         {
-            throw new NotImplementedException();
+            var book = _bookConverter.Parse(bookVO);
+            book = _repository.Update(book);
+            return _bookConverter.Parse(book);
         }
     }
 }
