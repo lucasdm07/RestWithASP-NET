@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestWithASPNET.Model;
 using RestWithASPNET.Business;
 using RestWithASPNET.Data.VO;
+using System;
+using System.Collections.Generic;
+using Tapioca.HATEOAS;
 
 namespace RestWithASPNET.Controllers
 {
-    [Produces("application/json")]
     [ApiVersion("1.0")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class PersonsController : Controller
@@ -24,6 +22,12 @@ namespace RestWithASPNET.Controllers
 
         // GET api/values
         [HttpGet]
+        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindByAll());
@@ -31,6 +35,12 @@ namespace RestWithASPNET.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(int id)
         {
             var person = _personBusiness.FindById(id);
@@ -41,6 +51,11 @@ namespace RestWithASPNET.Controllers
 
         // POST api/values
         [HttpPost]
+        [ProducesResponseType((201), Type = typeof(PersonVO))] // 201 é um created
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody]PersonVO personVO)
         {
             if (personVO == null)
@@ -50,6 +65,11 @@ namespace RestWithASPNET.Controllers
 
         // PUT api/values/5
         [HttpPut]
+        [ProducesResponseType((202), Type = typeof(PersonVO))] // 202 operacao efetuada com sucesso
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put(int id, [FromBody]PersonVO personVO)
         {
             if (personVO == null)
@@ -59,11 +79,15 @@ namespace RestWithASPNET.Controllers
             if (updatedPerson == null)
                 return NoContent();
             return new ObjectResult(updatedPerson);
-
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Delete(int id)
         {
             _personBusiness.Delete(id);

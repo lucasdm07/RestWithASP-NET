@@ -6,7 +6,6 @@ using RestWithASPNET.Data.VO;
 
 namespace RestWithASPNET.Controllers
 {
-    [Produces("application/json")]
     [ApiVersion("1.0")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class BooksController : Controller

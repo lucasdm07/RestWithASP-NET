@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Tapioca.HATEOAS;
 
 namespace RestWithASPNET.Data.VO
 { 
     [DataContract]
-    public class PersonVO
+    public class PersonVO : ISupportsHyperMedia
     {
         [DataMember(Order = 1)]
         public long? Id { get; set; }
@@ -20,5 +21,6 @@ namespace RestWithASPNET.Data.VO
         public string Address { get; set; }
         [DataMember(Order = 5)]
         public string Gender { get; set; }
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }
