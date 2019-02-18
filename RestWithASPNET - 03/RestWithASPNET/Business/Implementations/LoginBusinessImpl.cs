@@ -1,4 +1,5 @@
-﻿using RestWithASPNET.Model;
+﻿using RestWithASPNET.Data.VO;
+using RestWithASPNET.Model;
 using RestWithASPNET.Repository;
 using RestWithASPNET.Security.Configuration;
 using System;
@@ -22,13 +23,16 @@ namespace RestWithASPNET.Business.Implementations
             _tokenConfiguration = tokenConfiguration;
         }
 
-        public object FindByLogin(User user)
+        public object FindByLogin(UserVO userVO)
         {
             bool credentialsIsValid = false;
-            if (user != null && !string.IsNullOrWhiteSpace(user.Login))
+            User user = null;
+            if (userVO != null && !string.IsNullOrWhiteSpace(userVO.Login))
             {
                 // acessa o banco de dados para buscar o usuario
-                var baseUser = _repository.FindByLogin(user.Login);
+
+                var baseUser = _repository.FindByLogin(userVO.Login);
+                user = baseUser;
                 credentialsIsValid = (baseUser != null && user.Login == baseUser.Login && user.AcessKey == baseUser.AcessKey);
             }
             if (credentialsIsValid)

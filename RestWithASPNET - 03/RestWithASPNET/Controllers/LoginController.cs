@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestWithASPNET.Business;
+using RestWithASPNET.Data.VO;
 using RestWithASPNET.Model;
 using Tapioca.HATEOAS;
 
@@ -26,11 +27,11 @@ namespace RestWithASPNET.Controllers
         // POST api/values
         [AllowAnonymous]
         [HttpPost]
-        public object Post([FromBody]User user)
+        public object Post([FromBody]UserVO userVO)
         {
-            if (user == null) return BadRequest();
+            if (userVO == null) return BadRequest();
 
-            return _loginBusiness.FindByLogin(user);
+            return _loginBusiness.FindByLogin(userVO);
         }
     }
 }

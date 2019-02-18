@@ -8,15 +8,16 @@ using RestWithASPNET.Model;
 using RestWithASPNET.Model.Context;
 using RestWithASPNET.Repository;
 using RestWithASPNET.Repository.Generic;
+using RestWithASPNET.Repository.Generic.RestWithASPNET.Repository.Generic;
 
 namespace RestWithASPNET.Business
 {
     public class PersonBusinessImpl : IPersonBusiness
     {
-        private IRepository<Person> _repository;
+        private IPersonRepository _repository;
         private PersonConverter _personConverter;
 
-        public PersonBusinessImpl(IRepository<Person> personRepository)
+        public PersonBusinessImpl(IPersonRepository personRepository)
         {
             _repository = personRepository;
             _personConverter = new PersonConverter();
@@ -42,6 +43,11 @@ namespace RestWithASPNET.Business
         public PersonVO FindById(long id)
         {
             return _personConverter.Parse(_repository.FindById(id));
+        }
+
+        public List<PersonVO> FindByName(string firstName, string lastName)
+        {
+            return _personConverter.ParseList(_repository.FindByName(firstName, lastName));
         }
 
         public PersonVO Update(PersonVO person)

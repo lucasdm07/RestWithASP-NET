@@ -33,6 +33,19 @@ namespace RestWithASPNET.Controllers
             return Ok(_personBusiness.FindByAll());
         }
 
+        // GET api/values
+        [HttpGet("find-by-name")]
+        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult GetByName([FromQuery]string firstName, [FromQuery]string lastName )
+        {
+            return Ok(_personBusiness.FindByName(firstName, lastName));
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         [ProducesResponseType((200), Type = typeof(PersonVO))]
@@ -64,13 +77,30 @@ namespace RestWithASPNET.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut]
+        [HttpPut] //usada para realizar update
         [ProducesResponseType((202), Type = typeof(PersonVO))] // 202 operacao efetuada com sucesso
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [Authorize("Bearer")]
         [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put(int id, [FromBody]PersonVO personVO)
+        {
+            if (personVO == null)
+                // return BadRequest();
+                return NotFound();
+            var updatedPerson = _personBusiness.Update(personVO);
+            if (updatedPerson == null)
+                return NoContent();
+            return new ObjectResult(updatedPerson);
+        }
+        // Patch api/values/5
+        [HttpPatch] //usada para realizar update
+        [ProducesResponseType((202), Type = typeof(PersonVO))] // 202 operacao efetuada com sucesso 
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [Authorize("Bearer")]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult Patch(int id, [FromBody]PersonVO personVO)
         {
             if (personVO == null)
                 // return BadRequest();

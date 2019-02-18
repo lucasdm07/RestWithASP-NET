@@ -15,6 +15,7 @@ using RestWithASPNET.Hypermedia;
 using RestWithASPNET.Model.Context;
 using RestWithASPNET.Repository;
 using RestWithASPNET.Repository.Generic;
+using RestWithASPNET.Repository.Generic.RestWithASPNET.Repository.Generic;
 using RestWithASPNET.Repository.Implementations;
 using RestWithASPNET.Security.Configuration;
 using Swashbuckle.AspNetCore.Swagger;
@@ -67,11 +68,9 @@ namespace RestWithASPNET
             // vai acessar o arquivo appsettings no item TokenConfigurations para pegar os parametros do Token
             new ConfigureFromConfigurationOptions<TokenConfiguration>(
                 _configuration.GetSection("TokenConfigurations")
-            )
-            .Configure(tokenConfigurations);
+            ).Configure(tokenConfigurations);
 
             services.AddSingleton(tokenConfigurations);
-
 
             services.AddAuthentication(authOptions =>
             {
@@ -84,20 +83,19 @@ namespace RestWithASPNET
                 paramsValidation.ValidAudience = tokenConfigurations.Audience;
                 paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
 
-                // Validates the signing of a received token
+                // Valida a assinatura de um token recebido
                 paramsValidation.ValidateIssuerSigningKey = true;
 
-                // Checks if a received token is still valid
+                // Verifica se um token recebido ainda é válido
                 paramsValidation.ValidateLifetime = true;
 
-                // Tolerance time for the expiration of a token (used in case
-                // of time synchronization problems between different
-                // computers involved in the communication process)
+                // Tempo de tolerância para a expiração de um token (utilizado
+                // caso haja problemas de sincronismo de horário entre diferentes
+                // computadores envolvidos no processo de comunicação)
                 paramsValidation.ClockSkew = TimeSpan.Zero;
             });
 
-            // Enables the use of the token as a means of
-            // authorizing access to this project's resources
+            // Ativa o uso do token como forma de autorizar o acesso a recursos deste projeto
             services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
@@ -143,6 +141,7 @@ namespace RestWithASPNET
 
             // Repositorio
             services.AddScoped<IUserRepository, UserRepositoryImpl>();
+            services.AddScoped<IPersonRepository, PersonRepositoryImpl>();
             // Injeção de Dependencia do Generics
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }
@@ -179,7 +178,8 @@ namespace RestWithASPNET
             loggerFactory.AddDebug();
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
@@ -189,7 +189,8 @@ namespace RestWithASPNET
             app.UseRewriter(option);
 
             // mapear a rota
-            app.UseMvc(routes => {
+            app.UseMvc(routes =>
+            {
                 routes.MapRoute(
                     name: "DefaultApi",
                     template: "{controller=Values}/{id?}");
