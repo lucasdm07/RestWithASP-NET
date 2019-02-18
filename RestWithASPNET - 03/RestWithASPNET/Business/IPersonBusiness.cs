@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tapioca.HATEOAS.Utils;
 
 namespace RestWithASPNET.Business
 {
@@ -15,5 +16,6 @@ namespace RestWithASPNET.Business
         List<PersonVO> FindByName(string firstName, string lastName);
         PersonVO Update(PersonVO PersonVO);
         void Delete(long id);
+        PagedSearchDTO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page);
     }
 }

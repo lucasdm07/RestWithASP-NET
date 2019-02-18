@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using RestWithASPNET.Data.Converters;
+﻿using RestWithASPNET.Data.Converters;
 using RestWithASPNET.Data.VO;
 using RestWithASPNET.Model;
-using RestWithASPNET.Model.Context;
-using RestWithASPNET.Repository;
-using RestWithASPNET.Repository.Generic;
 using RestWithASPNET.Repository.Generic.RestWithASPNET.Repository.Generic;
+using System.Collections.Generic;
+using Tapioca.HATEOAS.Utils;
 
 namespace RestWithASPNET.Business
 {
@@ -55,6 +50,30 @@ namespace RestWithASPNET.Business
             var personEntity = _personConverter.Parse(person);
             personEntity = _repository.Update(personEntity);
             return _personConverter.Parse(personEntity);
+        }
+
+        public PagedSearchDTO<PersonVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page)
+        {
+            page = page > 0 ? page - 1 : 0;
+            string query = @"SELECT * FROM persons P WHERE 1 = 1";
+
+            if (!string.IsNullOrEmpty(name)) query = query + $" AND P.FirstName LIKE '%{name}%'";
+            query = query + $" ORDER BY P.FirstName {sortDirection} LIMIT {pageSize} OFFSET {page}";
+
+            string countQuery = @"select count(*) from Persons p where 1 = 1 ";
+            if (!string.IsNullOrEmpty(name)) countQuery = countQuery + $" and p.firstName LIKE '%{name}%'";
+
+            var persons = _repository.FindWithPagedSearch(query);
+
+            int totalResults = _repository.GetCount(countQuery);
+
+            return new PagedSearchDTO<PersonVO>
+            {
+                CurrentPage = page,
+                List = _personConverter.ParseList(persons),
+                PageSize = pageSize,
+                TotalResults = totalResults
+            };
         }
     }
 }

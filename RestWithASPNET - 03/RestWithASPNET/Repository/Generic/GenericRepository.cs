@@ -4,7 +4,6 @@ using RestWithASPNET.Model.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RestWithASPNET.Repository.Generic
 {
@@ -65,6 +64,30 @@ namespace RestWithASPNET.Repository.Generic
             return _dataset.SingleOrDefault(p => p.Id.Equals(id));
         }
 
+        public List<T> FindWithPagedSearch(string query)
+        {
+            return _dataset.FromSql<T>(query).ToList();
+        }
+
+        public int GetCount(string query)
+
+        {
+            return _dataset.FromSql<T>(query).Count();
+            /*var result = "";
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    result = command.ExecuteScalar().ToString();
+                }
+            }
+
+            return Int32.Parse(result);*/
+        }
+
         public T Update(T item)
         {
             if (!Exists(item.Id)) return null;
@@ -81,5 +104,6 @@ namespace RestWithASPNET.Repository.Generic
             }
             return item;
         }
+
     }
 }
