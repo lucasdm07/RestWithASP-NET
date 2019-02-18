@@ -60,7 +60,7 @@ namespace RestWithASPNET.Business
             if (!string.IsNullOrEmpty(name)) query = query + $" AND P.FirstName LIKE '%{name}%'";
             query = query + $" ORDER BY P.FirstName {sortDirection} LIMIT {pageSize} OFFSET {page}";
 
-            string countQuery = @"select count(*) from Persons p where 1 = 1 ";
+            string countQuery = @"select p.Id from Persons p where 1 = 1 ";
             if (!string.IsNullOrEmpty(name)) countQuery = countQuery + $" and p.firstName LIKE '%{name}%'";
 
             var persons = _repository.FindWithPagedSearch(query);
